@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FiveM Loadscreen</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: black;
+    flex-direction: column;
+  }
+  #background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+  }
+  #progress-bar-container {
+    position: absolute;
+    bottom: 30px;
+    width: 80%;
+    height: 20px;
+    background: #8400ff;
+    border-radius: 50px;
+    overflow: hidden;
+  }
+  #progress-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(2, 224, 249, 0.8), rgba(255, 255, 255, 0.3));
+    background-size: 100% 100%;
+    animation: loadingEffect 5s infinite;
+  }
+  @keyframes loadingEffect {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+  #mini-player {
+    position: absolute;
+    bottom: 70px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 350px;
+    z-index: 10;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  }
+  #mini-player span {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  #mini-player div {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  #mini-player button {
+    background: linear-gradient(90deg, #05bfe0, #8c03f5);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  #mini-player button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  }
+  #volume-slider {
+    width: 100px;
+  }
+</style>
+</head>
+<body>
+    
+<iframe id="background-video" 
+        src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&mute=1&loop=1&playlist=Dc4Xv2lI_Cc" 
+        frameborder="0" 
+        allowfullscreen>
+</iframe>
+<audio id="background-music" autoplay loop></audio>
+
+<div id="progress-bar-container">
+  <div id="progress-bar"></div>
+</div>
+
+<div id="mini-player">
+  <span id="current-song">Tocando: Dasabafar    </span>
+  <div>
+    <button id="prev-song">Anterior</button>
+    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+    <button id="next-song">Próxima</button>
+  </div>
+</div>
+
+<script>
+  // Lista de músicas
+  const musicFiles = ["d2.mp3","ultimamente.mp3", "eu so quero ser feliz.mp3"];
+  let currentIndex = 0;
+
+  // Seleciona elementos
+  const audioPlayer = document.getElementById('background-music');
+  const currentSongDisplay = document.getElementById('current-song');
+  const prevButton = document.getElementById('prev-song');
+  const nextButton = document.getElementById('next-song');
+  const volumeSlider = document.getElementById('volume-slider');
+
+  // Função para atualizar música
+  function updateMusic() {
+    audioPlayer.src = `music/${musicFiles[currentIndex]}`;
+    currentSongDisplay.textContent = `Tocando: ${musicFiles[currentIndex]}`;
+    audioPlayer.play().catch(error => {
+      console.error("Erro ao iniciar a música:", error);
+    });
+  }
+
+  // Eventos dos botões
+  prevButton.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + musicFiles.length) % musicFiles.length;
+    updateMusic();
+  });
+
+  nextButton.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % musicFiles.length;
+    updateMusic();
+  });
+
+  // Controle de volume
+  volumeSlider.addEventListener('input', () => {
+    audioPlayer.volume = volumeSlider.value;
+  });
+
+  // Inicializa música
+  window.addEventListener('load', () => {
+    updateMusic();
+  });
+</script>
+</body>
+</html>
